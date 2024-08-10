@@ -1,0 +1,640 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>P1919题解（快速傅里叶变换、快速数论变换） | Liserver&#39;s Blog</title>
+    <meta name="author" content="Liserver" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.1.1"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>LISERVER&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;LISERVER&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>P1919题解（快速傅里叶变换、快速数论变换）</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/5/26
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2FFT/" style="color: #00bcd4">快速傅里叶变换FFT</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/C/" style="color: #ffa2c4">C++</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E7%AE%97%E6%B3%95/" style="color: #ff7d73">算法</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%95%B0%E5%AD%A6/" style="color: #00a596">数学</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%A4%9A%E9%A1%B9%E5%BC%8F/" style="color: #ff7d73">多项式</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="快速傅里叶变换"><a href="#快速傅里叶变换" class="headerlink" title="快速傅里叶变换"></a>快速傅里叶变换</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>关于此算法，应用广泛。但是在 OI 算法竞赛中，我们只关注它“加速多项式乘法” 这一用途。</p>
+<p>本文适用于未接触过此算法的初学者。</p>
+<p>对于本文用词不当、概念错误等问题，请发布在讨论区，我看到会及时修改，力争全文的每一句话都可以被引用而无误。</p>
+<p>由于本文在书写之初只是想要教学算法，但是某些原因，进行了更改，本文适用于 P1919 的题解。</p>
+<span id="more"></span>
+
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><p>算法的名称为快速傅里叶变换（Fast Fourier Transform）。在一些文章中，它被翻译为“快速傅立叶变换”。其原因为作者 Fourier 的音译问题。本文章按照“傅里叶” 翻译。所有此名称的衍生名词的翻译也遵守此规定。</p>
+<h2 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h2><p>快速傅里叶变换可以用来<strong>加速多项式乘法</strong>，将 $O(n^2)$ 的暴力算法优化为 $O(n \log n)$ .</p>
+<p>并且，我们可以将形如 $1234$ 这样的十进制数字看作 $1x^3+2x^2+3x^1+4x^0$ 这个多项式在 $x&#x3D;10$ 情况下的值，这也是高精度的原理。两个数字相乘即是两个多项式相乘，所以快速傅里叶变换还可以<strong>加速高精度乘法</strong>。</p>
+<p>请注意，快速傅里叶变换本身的功能就是将多项式从系数表示转化为点值表示（此句后文会进行详尽解释）。上述的例子都是具体场景。</p>
+<p>例如，乘法的本质就是一个数字重复加几次，但是它可以用来计算面积、总数等。请理解这两句中的“用途”与“本质”的区别。</p>
+<p>在此解释的原因就是希望你不要被这几个例子限制住了你的想象力，算法本身会有无限的组合与变换，莫要局限于“乘法”二字身上。</p>
+<p>FFT 还有更多的用途，如信号处理、图像处理、量子计算等领域均有广泛应用，<strong>但是本文并不深入研究</strong>。</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>本算法严重依赖数学，大部分为高中数学内容，掺杂初中知识，本文一并讲解。本文未进行解释的，即默认你阅读本文章所要掌握的知识，你可以在其它途径查询。</p>
+<h3 id="多项式"><a href="#多项式" class="headerlink" title="多项式"></a>多项式</h3><p>既然快速傅里叶变换可以用来加速多项式乘法，我们首先要理解明白什么是多项式。</p>
+<h4 id="多项式的定义"><a href="#多项式的定义" class="headerlink" title="多项式的定义"></a>多项式的定义</h4><p>多项式的定义即是几个单项式的和。因为次数相同的单项式可以合并同类项，所以多项式的最简形式应是一些次数各不相同的单项式加法形式。</p>
+<p>$$<br>\begin{aligned}<br>F(x)&amp;&#x3D;\sum_{i&#x3D;0}^na_ix^i\<br>&amp;&#x3D;a_nx^n+a_{n-1}x^{n-1}+…+a_0x^0</p>
+<p>\end{aligned}<br>$$</p>
+<p>此多项式 $F(x)$ 是多项式的一般形式。多项式的所有单项式中最高次数为 $n$，定义该多项式的次数为 $n$ . 该多项式的次数界定义为所有 $m$ 满足 $m\gt n$ .</p>
+<h4 id="多项式的表示"><a href="#多项式的表示" class="headerlink" title="多项式的表示"></a>多项式的表示</h4><p>既然我们是 OIer ，那我们必然会联想到一个问题：<strong>如何存储多项式</strong>？</p>
+<p>观察多项式，发现对于 $n$ 次多项式，每个多项式所不同的只有<strong>每个单项式的系数</strong>，所以我们可以开辟一个数组，存储多项式。数组的容量，就是多项式所能存储的多项式的最高次数。</p>
+<p>如果我们用这种方法，那么多项式 $A$ 与 $B$ 相乘就可以写作下列形式（伪代码）：</p>
+<pre><code>for i from 0 to n
+    for j from o to n
+        plus A[i] and B[j] to C[somewhere]
+</code></pre>
+<p>不难发现时间复杂度 $O(n^2)$，在 $n$ 较大时时，就会非常慢。</p>
+<p>那么能否有其它的方法能存储多项式，并且乘法乘起来还很快呢？</p>
+<p>当然会有，<del>不然就不会出现此文章</del>。</p>
+<p>但是在介绍这种方法之前，我们需要一条引理：</p>
+<p><strong>对于一个 n 次多项式，可以用 n + 1 个点来确定。</strong></p>
+<p>思考此引理的含义，我们先从特殊情况出发，如果多项式是 1 次的，那么多项式的图像当然是一条直线。</p>
+<p>而两点确定一条直线，我们可以用两个点确定这一条直线。</p>
+<p>对于普遍情况，此引理也成立。</p>
+<p>有了这个非常棒的性质，我们就可以通过两个数组 $X$ 和 $Y$ 存储一个多项式。如果点的 $x$ 默认确定，那么可以只用一个数组存储。</p>
+<pre><code>for i from 0 to n
+    plus A[i] and B[i] to C[i]
+</code></pre>
+<p>是 $O(n)$ 的时间复杂度！</p>
+<p>实际上，我们高兴得有点早了。<del>如果止步于此的话，本文章仍然不会存在</del>。</p>
+<p>我们忽略了一个问题：在转换和计算点值时，选点是 $O(n)$ 计算是 $O(n)$ ，最后累计 $O(n^2)$ .</p>
+<p>是的，我们的思路是对的，它确实可以将 $O(n^2)$ 的计算转化为 $O(n)$ 的计算。但是题目一般都不会是点值表示法，我们需要转换，而<strong>转换才是乘法计算中的大头</strong>。</p>
+<p>而转换，正是快速傅里叶变换的用武之地，它可以将多项式从系数表示法转化为点值表示法，并且时间复杂度只用 $O(n \log n)$。</p>
+<p>并且，快速傅里叶逆变换还可以将点值表示法转化为系数表示法，时间复杂度同样只有 $O(n \log n)$ .</p>
+<p>而如何实现这样神奇的转换，我们则需要借助复数。</p>
+<h3 id="复数"><a href="#复数" class="headerlink" title="复数"></a>复数</h3><p>复数是高中数学的内容，此文简略介绍，只保证能够看懂本算法。</p>
+<h4 id="复数的引入"><a href="#复数的引入" class="headerlink" title="复数的引入"></a>复数的引入</h4><p>在实数域内，根号下的数字只能是正数，不能是负数。</p>
+<p>原因很简单，在实数域内，平方满足如下性质：<br>$$<br>a^2\ge0<br>$$</p>
+<p>不愿根号破坏对称美学数学家们就定义了一个数字 $i$ 满足 $i^2&#x3D;-1$ 称为<strong>虚数</strong>。</p>
+<p>是的，数学家们就是这么无聊。</p>
+<p>但是也就是这无心之举，却得以使数学的发展再次前进了一大步 —— 数学家们发现 $i$ 可以带来许多便利。</p>
+<p>形如 $bi$ 的形式的数字叫做<strong>纯虚数</strong>。</p>
+<p>一切数字都可以写作 $a+bi$ 的形式，这种形式的数字称作<strong>复数</strong>。</p>
+<p>其中，$a$ 称为<strong>实部</strong>，$b$ 称为<strong>虚部</strong>。</p>
+<p>如此，我们就可以得到目前数学上最大的数域：<strong>复数域</strong>。</p>
+<p>复数也可以作为方程的解，并且延伸出一个重要的定理 —— <strong>代数基本定理</strong>：简单概括，$n$ 次方程有且仅有 $n$ 个根。</p>
+<h4 id="复数的运算"><a href="#复数的运算" class="headerlink" title="复数的运算"></a>复数的运算</h4><p>复数运算很简单，基本上就是分配律。</p>
+<p>有复数 $z_1&#x3D;a_1+b_1i$ 以及 $z_2&#x3D;a_2+b_2i$，下文讨论两者的四则运算。</p>
+<h5 id="复数加法"><a href="#复数加法" class="headerlink" title="复数加法"></a>复数加法</h5><p>$$<br>\begin{aligned}<br>z_1+z_2&amp;&#x3D;(a_1+b_1i)+(a_2+b_2i)\<br>&amp;&#x3D;a_1+b_1i+a_2+b_2i\<br>&amp;&#x3D;(a_1+a_2)+(b_1+b_2)i<br>\end{aligned}<br>$$</p>
+<h5 id="复数减法"><a href="#复数减法" class="headerlink" title="复数减法"></a>复数减法</h5><p>$$<br>\begin{aligned}<br>z_1-z_2&amp;&#x3D;(a_1+b_1i)-(a_2+b_2i)\<br>&amp;&#x3D;a_1+b_1i-a_2-b_2i\<br>&amp;&#x3D;(a_1-a_2)+(b_1-b_2)i<br>\end{aligned}<br>$$</p>
+<h5 id="复数乘法"><a href="#复数乘法" class="headerlink" title="复数乘法"></a>复数乘法</h5><p>$$<br>\begin{aligned}<br>z_1\times z_2&amp;&#x3D;(a_1+b_1i)\times(a_2+b_2i)\<br>&amp;&#x3D;a_1(a_2+b_2i)+b_1i(a_2+b_2i)\<br>&amp;&#x3D;a_1a_2+a_1b_2i+a_2b_1i-b_1b_2\<br>&amp;&#x3D;(a_1a_2-b_1b_2)+(a_1b_2+a_2b_1)i<br>\end{aligned}<br>$$</p>
+<h5 id="复数除法"><a href="#复数除法" class="headerlink" title="复数除法"></a>复数除法</h5><p>$$<br>\begin{aligned}<br>z_1 \div z_2&amp;&#x3D;\frac{a_1+b_1i}{a_2+b_2i}\<br>&amp;&#x3D;\frac{(a_1+b_1i)(a_2-b_2i)}{(a_2+b_2i)(a_2-b_2i)}\<br>&amp;&#x3D;\frac{(a_1a_2+b_1b_2)+(a_2b_1-a_1b_2)i}{a_2^2-b_2^2}\<br>&amp;&#x3D;\frac{a_1a_2+b_1b_2}{a_2^2-b_2^2}+\frac{a_2b_1-a_1b_2}{a_2^2-b_2^2}i<br>\end{aligned}<br>$$</p>
+<h4 id="复数的几何意义"><a href="#复数的几何意义" class="headerlink" title="复数的几何意义"></a>复数的几何意义</h4><p>同实数一样，复数也有几何意义。实数与数轴上的点一一对应，复数则以坐标轴上的点一一对应。</p>
+<p>但是，这个坐标轴需要改造一下：</p>
+<p>复数的基本形式是 $a+bi$，我们按照此规定了复数的坐标轴。</p>
+<p>横轴叫做实轴，代表复数的实部 $a$。纵轴是虚轴，代表复数的虚部 $b$ .</p>
+<p>而此坐标轴形成的平面，叫做<strong>复平面</strong>。</p>
+<p>复数在复平面下的加减乘除也有特殊的意义，但是涉及到向量，超出了本文章的讨论范围，如果你对此有兴趣，请参阅一些书籍或文章。</p>
+<h4 id="共轭复数"><a href="#共轭复数" class="headerlink" title="共轭复数"></a>共轭复数</h4><p>复数 $z&#x3D;a+bi$  的共轭复数定义为 $a-bi$ 记作 $\bar z$ . </p>
+<h4 id="欧拉公式"><a href="#欧拉公式" class="headerlink" title="欧拉公式"></a>欧拉公式</h4><p>大数学家欧拉在数学界有着不可撼动的地位，其欧拉公式就有好几个<del>（我曾一度疑惑为什么此欧拉公式非彼欧拉公式）</del>。</p>
+<p>本文章所讨论的，就是那个数学上最美妙的公式<del>（我认为的）</del>。</p>
+<p>$$<br>e^{i\pi}+1&#x3D;0<br>$$</p>
+<p>这个公式，有自然常数 $e$ 和圆周率 $\pi$，有乘法的单位元 $1$，有加法的单位元 $0$ .</p>
+<p>但其实此式子只是欧拉公式的一个特殊情况，真正的欧拉公式长这样：</p>
+<p>$$<br>e^{i\theta}&#x3D;\cos(\theta)+i\sin(\theta)<br>$$</p>
+<p>此公式将指数函数延伸到复数域，并与三角函数建立起了桥梁。</p>
+<h4 id="单位根"><a href="#单位根" class="headerlink" title="单位根"></a>单位根</h4><h5 id="单位根的定义"><a href="#单位根的定义" class="headerlink" title="单位根的定义"></a>单位根的定义</h5><p>考虑一个这样的方程：</p>
+<p>$$<br>\omega^n&#x3D;1<br>$$</p>
+<p>根据代数基本定理，此方程有 $n$ 个根。</p>
+<p>而这个方程还有特殊的性质，我们可以通过复平面来窥其究竟。</p>
+<p>下图是当 $n&#x3D;6$ 时的方程 6 个根在复平面上的分布。</p>
+<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/ws2clo92.png"></p>
+<p>是否发现，这 $n$ 个解在以原点为圆心，以 1 为半径的一个圆上均匀分布？</p>
+<p>这个圆叫做单位圆。</p>
+<p>可以证明，$\omega$ 是单位圆的 $n$ 等分点。</p>
+<p>此方程的 $n$ 个解，叫做 $n$ 次单位根，记作 $w_n$ .</p>
+<p>根据欧拉公式，我们还可以直接求出单位根：</p>
+<p>$$<br>\begin{aligned}<br>w_n&amp;&#x3D;e^{\frac{2\pi i}{n}}\<br>&amp;&#x3D;\cos(\frac{2\pi}{n})+i\sin(\frac{2\pi}{n})<br>\end{aligned}<br>$$</p>
+<h5 id="单位根的性质"><a href="#单位根的性质" class="headerlink" title="单位根的性质"></a>单位根的性质</h5><p>$n$ 次单位根有 $n$ 个，都是单位圆的 $n$ 等分点，此性质已经在上文提到。</p>
+<p>$n$ 个单位根分别是欧拉公式求出的 $\omega_n$ 的 $m$ 次方， $m$ 满足  $0 \le m \le n$ . </p>
+<p>例如， 4 次单位根分别是 $\omega_4^1, \omega_4^2, \omega_4^3, \omega_4^4$ .</p>
+<p>同时， $\omega_n^0&#x3D;\omega_n^n&#x3D;1$ .</p>
+<p>现在提出一条引理（消去引理）：</p>
+<p>$$<br>w_{dn}^{dk}&#x3D;w_n^k<br>$$</p>
+<p>关于此引理的证明，可以直接带入公式：</p>
+<p>$$<br>w_{dn}^{dk}&#x3D;e^{\frac{2\pi dki}{dn}}&#x3D;e^{\frac{2\pi ki}{n}}&#x3D;\omega_n^k<br>$$</p>
+<p>根据消去引理，我们可以得到（ $n$ 为偶数）：<br>$$<br>w_n^{\frac{n}{2}}&#x3D;w_{2}&#x3D;-1<br>$$</p>
+<p>此推论的证明，也很简单：</p>
+<p>$$<br>w_n^{\frac{n}{2}}&#x3D;\omega_{2n}^n&#x3D;\omega_2&#x3D;e^{\frac{2\pi i}{2}}&#x3D;e^{i\pi}&#x3D;-1<br>$$</p>
+<p>根据此结论，还可以得到：<br>$$<br>w_n^{m+\frac{n}{2}}&#x3D;\omega_n^m\times w_n^\frac{n}{2}&#x3D;-\omega_n^m<br>$$<br>第二条引理（折半定理）：</p>
+<p>如果 $n\gt0$ 为偶数，那么 $n$ 个 $n$ 次单位根的平方集合就是 $\frac{n}{2}$ 个 $\frac{n}{2}$ 次单位复数根集合。</p>
+<p>证明：</p>
+<p>根据消去引理：</p>
+<p>$$<br>(w_n^m)^2&#x3D;w_n^{2m}&#x3D;w_{\frac{n}{2}}^m<br>$$<br>此时集合的数量仍然是 $n$ ，而引理说明应该是 $\frac{n}{2}$ .<br>$$<br>(\omega_n^{m+\frac{n}{2}})^2&#x3D;(-\omega_n^m)^2&#x3D;(\omega_n^m)^2<br>$$<br>上述式子证明了 $(w_n^{m+\frac{n}{2}})^2$ 与 $(w_n^m)^2$ 相等，也就是集合少了一半。</p>
+<h2 id="多项式转换的优化"><a href="#多项式转换的优化" class="headerlink" title="多项式转换的优化"></a>多项式转换的优化</h2><h3 id="特殊情况下的优化"><a href="#特殊情况下的优化" class="headerlink" title="特殊情况下的优化"></a>特殊情况下的优化</h3><p>如前文所说，将系数表示法转化为点值表示法正是我们迫切需要解决的。</p>
+<p>我们只考虑一个简单的多项式：<br>$$<br>\begin{aligned}<br>F(x)&amp;&#x3D;4x^2+0x+0x^0\<br>&amp;&#x3D;4x^2<br>\end{aligned}<br>$$<br>根据前文的讨论，我们需要带入至少三个值。</p>
+<p>现在思考一个问题：</p>
+<p>我们能否少计算几个点？</p>
+<p>换句话说，我们能否在取到一些点后，通过 $O(1)$ 算出另一些点的值？</p>
+<p>答案是存在的，我们只需要把取的点分组，每一组的两个点互为相反数，那么一组中一个点得到了值，另一个点的值也就知道了。</p>
+<p>原因就是，这个多项式是一个偶函数，即<br>$$<br>F(-x)&#x3D;(-4x)^2&#x3D;4x&#x3D;F(x)<br>$$<br>在这个例子中，我们只是简单的优化了选点的方式，就使得计算量减半。</p>
+<p>那么，再看一个例子：<br>$$<br>F(x)&#x3D;7x^3<br>$$<br>这个例子是否适用？</p>
+<p>当然适用，选点同样是相反数，但是一组中得到的两个值不再相等，而是互为相反数。</p>
+<p>原因也很简单， $F$ 是一个奇函数：<br>$$<br>F(-x)&#x3D;(-7x)^3&#x3D;-(7x)^3&#x3D;-F(x)<br>$$</p>
+<h3 id="由特殊到一般"><a href="#由特殊到一般" class="headerlink" title="由特殊到一般"></a>由特殊到一般</h3><p>现在，在两个例子中，我们都利用选点的艺术减少了时间复杂度，现在我们将这个艺术从特殊推向一般。</p>
+<p>即，对于一个 $n$ 次多项式，我们考虑其如何优化。<br>$$<br>F(x) &#x3D; \sum_{i&#x3D;0}^{n}a_ix^i<br>$$<br>那么在这个情况下我们不能以普通的奇函数、偶函数来优化，因为这个多项式可能非奇非偶。</p>
+<p>那我们只好凑出奇函数和偶函数。</p>
+<p>将原多项式拆解为：<br>$$<br>\begin{aligned}<br>F_1(x)&amp;&#x3D;a_1x^0+a_3x^1+a_5x^2+…+a_{n-1}x^{\frac{n}{2}-1}\<br>F_2(x)&amp;&#x3D;a_0x^0+a_2x^1+a_4x^2+…+a_nx^{\frac{n}{2}}<br>\end{aligned}<br>$$<br>我们按照原多项式的系数奇偶拆除了两个新的多项式。</p>
+<p>注意，我们默认 $F$ 的次数 $n$ 是偶数，如果不是偶数，可以为 $F$ 添加一个次数为 $n+1$ 、系数为 0 的单项式，这样 $F$ 就变成了次数为偶数的多项式。</p>
+<p>由于新多项式与原多项式的次数不同，所以不能直接暴力相加。</p>
+<p>但是三者肯定有一个微妙的关系，我们进行瞪眼观察，可以得到：<br>$$<br>F(x)&#x3D;F_1(x^2)+xF_2(x^2)<br>$$<br>至于为什么不是 $F_2(x^3)$ ，则是因为我们需要让两个多项式都是偶函数。</p>
+<p>这样，我们就将求 $F$ 的点值变成了求 $F_1$ 与 $F_2$ 这两个函数的点值。</p>
+<p>而这又变成了两个新的求值问题，并且每个要求点值的多项式次数都是原来的一半。</p>
+<p>又因为多项式是偶函数，按照第一个例子，我们要求的值变成了一半的一半。</p>
+<p>对于剩下需要求的值，我们仍然可以通过上述策略拆分函数。</p>
+<p>如果一切顺利，那么时间复杂度就应该是 $O(n\log n)$ .</p>
+<p><del>既然我这么说，肯定是不是很顺利的。</del></p>
+<p>注意到 $x^2 \ge 0$ . 所以，等到 $F_1$ 和 $F_2$ 求值时，所有的 $x$ 都变成了正数，与例子一中互为相反数的要求不符。</p>
+<h2 id="快速傅里叶变换-1"><a href="#快速傅里叶变换-1" class="headerlink" title="快速傅里叶变换"></a>快速傅里叶变换</h2><h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><p>如果你读到现在对于前文复数的知识有些遗忘，请立即返回温习，下文将会高频使用前文的引理、推理。</p>
+<p>梳理一下，我们的点子是对的。但是选点上仍然有问题。</p>
+<p>我们所需要的，是平方后的数字仍然以相反数成对出现。</p>
+<p>既然平方后还能出现负数，则一定需要复数的参与才能完成。</p>
+<p>恰好，<strong>单位根满足这样的性质</strong>。</p>
+<p>所以，我们求的 $n$ 个点，就恰好可以选择 $n$ 次单位根，正恰好 $n$ 次单位根有 $n$ 个。</p>
+<p>这正是快速傅里叶变换的精髓所在。</p>
+<p>那么我们就将上文中的式子替换为 $n$ 次单位根。<br>$$<br>\begin{aligned}<br>F(\omega_n^m)&amp;&#x3D;F_1((\omega_n^m)^2)+\omega_n^mF_2((\omega_n^m)^2)\<br>&amp;&#x3D;F_1(\omega_n^{2m})+\omega_n^mF_2(\omega_n^{2m})\<br>&amp;&#x3D;F_1(\omega_{\frac{n}{2}}^m)+\omega_n^mF_2(\omega_{\frac{n}{2}}^m)<br>\end{aligned}<br>$$<br>更加惊奇的是，我们将 $\omega_n^{m+\frac{n}{2}}$ 带入：<br>$$<br>\begin{aligned}<br>F(\omega_n^{m+\frac{n}{2}})&amp;&#x3D;F_1((\omega_n^{m+\frac{n}{2}})^2)+w_n^{m+\frac{n}{2}}F_2((\omega_n^{m+\frac{n}{2}})^2)\<br>&amp;&#x3D;F_1((-w_n^m)^2)-\omega_n^mF_2((-\omega_n^m)^2)\<br>&amp;&#x3D;F_1(\omega_n^{2m})-\omega_n^mF_2(\omega_n^{2m})\<br>&amp;&#x3D;F_1(\omega_{\frac{n}{2}}^m)-\omega_n^mF_2(\omega_\frac{n}{2}^m)<br>\end{aligned}<br>$$<br>发现带入 $\omega_n^m$ 与 $\omega_n^{m+\frac{n}{2}}$ 后两者只差了一个单项式系数的符号，所以我们在求出左半部分时，可以 $O(1)$ 求出右半部分。</p>
+<p>这再次缩减了求值的次数。</p>
+<p>并且，根据折半定理，求 $(\omega_n^m)^2$ 的集合实际上就是求所有 $\omega_{\frac{n}{2}}^m$ 的集合，所以 $F_1$ 与 $F_2$ 这两个子问题就变成了求 $\frac{n}{2}$ 个点值的问题，与父问题大抵相同，只不过是求值的个数少了一半，满足递归的条件。</p>
+<p>这样，我们就可以递归地求解 $F_1$ 与 $F_2$ .</p>
+<p>不过这次我们没有用上偶函数的思想，而是在拆解的时候做了文章，同样缩小了一半的范围。</p>
+<p>不难发现这是分治的思想，时间复杂度 $O(n\log n)$ .</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>关于这个算法的实现，一共有两种方法，一种是按照上面所讲述的递归实现，另一种是继续研究，将“拆分”改为“合并”的非递归实现。</p>
+<h4 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h4><p>递归实现没有什么新的理论知识，完全按照上文的实现，请直接阅读伪代码：</p>
+<pre><code>func FFT(a)
+    n = a.length // a 必须是 2 的 n 次幂
+    if n == 1
+        return a // 只有一个常量 代入值必定是本身
+    wn = complex(cos(2 * pi / n), sin(2 * pi / n))
+    w = complex(1, 0)
+    a1 = &#123;a[1], a[3], a[5], ..., a[n - 1]&#125; // 根据奇偶性对系数分组
+    a2 = &#123;a[0], a[2], a[4], ..., a[n]&#125;
+    y1 = FFT(a1) // 递归地调用、分解
+    y2 = FFT(y2)
+    y = &#123;&#125; // 返回值
+    for m from 0 to n / 2 - 1
+        y[m] = y1[m] + w * y2[m]
+        y[m + n / 2] = y1[m + n / 2] - w * y2[m + n / 2]
+        w = w * wn // 得到下一个单位根
+    return y
+</code></pre>
+<h4 id="非递归实现"><a href="#非递归实现" class="headerlink" title="非递归实现"></a>非递归实现</h4><p>观察系数在每轮递归后的位置所形成的树，注意叶节点的位置以及它的原位置。</p>
+<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/3gwzsv0m.png"></p>
+<p>可以证明，对于每一个系数，它最后位置位于自身二进制的“倒数”（从 0 开始计数）。</p>
+<p>所谓“倒数”即将原二进制反转，得到新的二进制数字。</p>
+<p>例如，处于第 $6&#x3D;(110)_2$ 位置的系数最终位于 $3&#x3D;(011)_2$ 位置。</p>
+<p>那么，我们可以先将所有系数调整到最终的位置，随后合并。</p>
+<p>我们按照这棵树来进行遍历，第一层循环遍历树的每一层，第二层循环遍历目前的合并位置，第三层循环则开始进行合并。</p>
+<p>需要注意，我们表面上是在遍历一棵树，实际上我们是在遍历一个数组。</p>
+<p>伪代码：</p>
+<pre><code>func FFT(a)
+    change_pos(a) // 将每个系数移动到最终位置
+    n = a.length
+    for layer from 1 to log2(n) // 遍历树的层数
+        len = power(2, layer) // 每一组的长度（一组即两个节点）
+        wn = complex(cos(2 * pi / len), sin(2 * pi / len)) // 计算单位根
+        for pos from 0 to n - 1 by len // 合并到的位置
+            w = complex(1, 0)
+            for i from 0 to len / 2 - 1 // 开始合并
+                t = w * a[pos + i + len / 2]
+                u = a[pos + i]
+                a[pos + i] = u + t
+                a[pos + i + len / 2] = u - t
+                w = w * wn
+    return a
+</code></pre>
+<h2 id="快速傅里叶逆变换"><a href="#快速傅里叶逆变换" class="headerlink" title="快速傅里叶逆变换"></a>快速傅里叶逆变换</h2><p>我们将多项式转化为点值表示后，需要再将它转换回来，此时就需要快速傅里叶逆变换。</p>
+<p>我们在快速傅里叶变换时，只需要将代入的单位根取倒数，并将得到的结果都除以 $n$ ，即是快速傅里叶逆变换。</p>
+<p>而单位根的倒数，即是单位根的共轭复数。</p>
+<p>相应的代码，由于思维难度不大，留作课后练习。</p>
+<h2 id="一些例题"><a href="#一些例题" class="headerlink" title="一些例题"></a>一些例题</h2><p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1919">P1919 【模板】高精度乘法 | A*B Problem 升级版 - 洛谷</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3803">P3803 【模板】多项式乘法（FFT） - 洛谷</a></p>
+<h4 id="P1919-AC代码"><a href="#P1919-AC代码" class="headerlink" title="P1919 AC代码"></a>P1919 AC代码</h4><pre><code class="c++">#include &lt;bits/stdc++.h&gt;
+
+const int MAXN = 4000005;
+const double PI = 3.1415926535;
+
+// 手写复数实现 防止卡STL
+class complex
+&#123;
+public:
+    // z = a + bi
+    double a, b;
+
+    complex() = default;
+    complex(double _a, double _b) : a(_a), b(_b) &#123;&#125;
+
+    complex operator+(complex other)
+    &#123;
+        return complex(a + other.a, b + other.b);
+    &#125;
+
+    complex operator-(complex other)
+    &#123;
+        return complex(a - other.a, b - other.b);
+    &#125;
+
+    complex operator*(complex other)
+    &#123;
+        return complex(a * other.a - b * other.b, a * other.b + other.a * b);
+    &#125;
+
+    void operator+=(complex other)
+    &#123;
+        *this = *this + other;
+    &#125;
+
+    void operator-=(complex other)
+    &#123;
+        *this = *this - other;
+    &#125;
+
+    void operator*=(complex other)
+    &#123;
+        *this = *this * other;
+    &#125;
+&#125;;
+
+// 修改后系数的位置
+int rev[MAXN];
+
+void FastFastTle(complex arr[], int len, int flag)
+&#123;
+    // 将系数移动到最终位置
+    for (int i = 0; i &lt; len; i++)
+    &#123;
+        // 防止系数移动两遍后回去
+        if (i &lt; rev[i])
+        &#123;
+            // 开始交换
+            std::swap(arr[i], arr[rev[i]]);
+        &#125;
+    &#125;
+
+    // 层数
+    for (int h = 2; h &lt;= len; h &lt;&lt;= 1)
+    &#123;
+        // 通过欧拉公式计算单位根
+        complex wn = complex(std::cos(2 * PI / h), std::sin(flag * 2 * PI / h));
+
+        // 位置
+        for (int pos = 0; pos &lt; len; pos += h)
+        &#123;
+            // 所带入不同的单位根
+            complex w = complex(1, 0);
+
+            for (int k = pos; k &lt; pos + h / 2; k++)
+            &#123;
+                // 开始合并
+                complex u = arr[k];
+                complex t = w * arr[k + h / 2];
+                arr[k] = u + t;
+                arr[k + h / 2] = u - t;
+                w *= wn;
+            &#125;
+        &#125;
+    &#125;
+
+    // 快速傅里叶逆变换要求在计算后每一项都除以 n
+    if (flag == -1)
+    &#123;
+        for (int i = 0; i &lt; len; i++)
+        &#123;
+            arr[i].a /= len;
+        &#125;
+    &#125;
+&#125;
+
+complex a[MAXN], b[MAXN];
+
+int main()
+&#123;
+    // IO优化
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+
+    std::string stra, strb;
+    std::cin &gt;&gt; stra &gt;&gt; strb;
+
+    const int lena = stra.size(), lenb = strb.size();
+
+    for (int i = 0; i &lt; lena; i++)
+    &#123;
+        a[i] = complex(stra[lena - 1 - i] - &#39;0&#39;, 0);
+    &#125;
+
+    for (int i = 0; i &lt; lenb; i++)
+    &#123;
+        b[i] = complex(strb[lenb - 1 - i] - &#39;0&#39;, 0);
+    &#125;
+
+    int y = 1;
+
+    while (y &lt; 2 * lena || y &lt; 2 * lenb)
+    &#123;
+        y &lt;&lt;= 1;
+    &#125;
+
+    for (int i = lena; i &lt;= y; i++)
+    &#123;
+        a[i] = complex(0, 0);
+    &#125;
+
+    for (int i = lenb; i &lt;= y; i++)
+    &#123;
+        b[i] = complex(0, 0);
+    &#125;
+
+    FastFastTle(a, y, 1);
+    FastFastTle(b, y, 1);
+
+    for (int i = 0; i &lt; y; i++)
+    &#123;
+        a[i] *= b[i];
+        ans[i] = 0;
+    &#125;
+
+    FastFastTle(a, y, -1);
+
+    for (int i = 0; i &lt; y; i++)
+    &#123;
+        // 此处+0.5然后取整相当于四舍五入
+        ans[i] += (int)(a[i].a + 0.5);
+        // 进位
+        ans[i + 1] += ans[i] / 10;
+        ans[i] %= 10;
+    &#125;
+
+    int h = lena + lenb + 2;
+
+    while (ans[h] == 0 &amp;&amp; h &gt;= 0)
+    &#123;
+        h--;
+    &#125;
+
+    if (h == -1)
+    &#123;
+        std::cout &lt;&lt; 0;
+    &#125;
+
+    else for (; h &gt;= 0; h--)
+    &#123;
+        std::cout &lt;&lt; ans[h];
+    &#125;
+&#125;
+</code></pre>
+<h2 id="参考与致谢"><a href="#参考与致谢" class="headerlink" title="参考与致谢"></a>参考与致谢</h2><p>本文章参考了 OI Wiki 、《算法导论》的相关部分，以及洛谷的部分文章。感谢前人所作的贡献，让我学会了这个算法并得以写出此文章。</p>
+
+    </div>
+    
+    
+    
+    
+    <div id="comment">
+        <div id="giscus-container" class="giscus"></div>
+    </div>
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Liserver&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Liserver
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+<script
+    src="https://giscus.app/client.js"
+    data-repo="LiserverYang/LiserverYang.github.io"
+    data-repo-id="R_kgDOLIJvHA"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOLIJvHM4CcmmM"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin
+    async
+></script>
+
+
+
+
+
+    
+</body>
+</html>

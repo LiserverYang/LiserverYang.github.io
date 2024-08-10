@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>Dijkstra正确性证明 | Liserver&#39;s Blog</title>
+    <meta name="author" content="Liserver" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.1.1"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>LISERVER&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;LISERVER&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Dijkstra正确性证明</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/19
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/C/" style="color: #00bcd4">C++</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%9B%BE%E8%AE%BA/" style="color: #03a9f4">图论</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E7%AE%97%E6%B3%95/" style="color: #ff7d73">算法</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%95%B0%E5%AD%A6/" style="color: #00bcd4">数学</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%AF%81%E6%98%8E/" style="color: #ffa2c4">证明</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="Dijkstra正确性证明"><a href="#Dijkstra正确性证明" class="headerlink" title="Dijkstra正确性证明"></a>Dijkstra正确性证明</h1><span id="more"></span>
+
+<h2 id="Dijkstra算法的本质"><a href="#Dijkstra算法的本质" class="headerlink" title="Dijkstra算法的本质"></a>Dijkstra算法的本质</h2><p>如果你有思考“为什么”的习惯，就一定会发现，Dijkstra 的本质就是动态规划。松弛操作实际上就类似于动态规划中的状态更新。</p>
+<p>设 $f(u)$ 为 $s$ 至 $ u $ 的最短路径（ $s$ 为源点，下文同）。显然，状态转移方程为：<br>$$<br>f(u)&#x3D;min_{v\in fathers} f(v)+w_{u,v}<br>$$<br>其中，$fathers$ 表示所有点 $ v $ 使得存在边 $ e&#x3D;v\to u $ 。$w_{u,v}$ 则表示该边的权。</p>
+<p>这个状态转移方程是显然的，是非常经典的“退一步思考”，即思考点 $ u $ 是父节点中哪个点来的。既然我们求的是最短路，当然是能让整条路径最小的那一点。</p>
+<p>而 Dijkstra 中，则引入了一切别的策略，本质上都只是优化。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>好了，实际上前文和正文都没关系，只是想要分享一下我对于一个算法的理解。</p>
+<p>我们重新回忆算法每一步都干了什么：</p>
+<ol>
+<li>在未确定最短路集合 $T$ 中，选择估计最短路最短的点，将其移动至已确定最短路集合 $S$ 中</li>
+<li>利用此点，更新邻近的点（松弛）。</li>
+</ol>
+<p>我们无非就是需要证明，每次从 $T$ 集合中拿出的点的估计最短路 $ dis(u) $  与实际最短路 $D(u)$ 相等。</p>
+<p>使用反证法，假设此结论不成立，设 $e$ 点是第一个从 $T$ 点中拿出而 $dis(e)\not&#x3D; D(e)$ 。我们知道，估计最短路一定大于或等于实际最短路，即 $ dis(e)\ge D(e) $。</p>
+<p>整理，得 $ dis(e) \gt D(e) $ 。</p>
+<p>首先讨论一下第一个点能否不满足此结论。</p>
+<p>算法刚开始，$ T $ 的每个点都为 $ +\infty $ 。随后，$ T_s $ 被修改为 0 。</p>
+<p>那么，第一次拿出的点一定是 $ s $ 。$ dis(s)&#x3D;D(s)&#x3D;0 $ ，满足结论，即 $ e\not&#x3D;s $ 。</p>
+<p>接下来讨论不存在 $ s\to e$ 的路径时（即 $D(s)&#x3D;+\infty$ 时），是否满足结论：</p>
+<p>此算法的 $ T_e $ 与 $dis(e)$ 的更新依赖于父节点的松弛操作。</p>
+<p>若父节点也未曾更新，$T_e$ 与 $ dis(e) $ 也都未更新，$ dis(e)&#x3D;D(e)&#x3D;+\infty $ 。</p>
+<p>若父节点更新过，意味着父节点的父节点也会有更新。不断追溯，发现，最初的更新来源于源点。</p>
+<p>也就是说，若父节点更新，是从源点开始一路更新到父节点。那么意味着父节点存在一条路径 $ s \to father $。</p>
+<p>若 $ e $ 点的父节点存在路径，那么 $ e $ 点也一定存在一条路径 $ s \to father \to e $ 。与讨论条件矛盾。</p>
+<p>所以，若 $e$ 点不存在与 $ s $ 点的路径时，结论成立。</p>
+<p>也就是说 $ e $ 点一定存在一条路径 $ s\to e $ 。</p>
+<p>那么讨论一下该路径的性质。</p>
+<p>因为 $ e $ 是第一个出错的点，所以在此之前，所有 $ u \in S $ 都满足 $ dis(u) &#x3D; D(u) $ 。</p>
+<p>若所有 $s \to e$ 的路径上的所有点都满足 $ u \in S $ ，显然 $ dis(e)&#x3D;D(e) $ 与假设矛盾。</p>
+<p>所以一定有一条路径 $s \to x \to y \to e$ ，其中，$ y $ 是路径上第一个属于 $ T $ 的点。那么 $ x $ 就一定满足 $ x \in S $ 。</p>
+<p>刚才已经提到，$ x $ 一定满足 $ dis(x) &#x3D; D(x) $ 。此时会更新 $ y $ 。可以证明，当 $ e $ 被取走时，$ dis(y)&#x3D;D(y) $。</p>
+<p>xxxxxxxxxx &#x2F;* * 高精度模板代码，附注释 <em>&#x2F;​#include <iostream>#include <cmath>​using namespace std;​const size_t max_size &#x3D; 100;​&#x2F;</em> * 快速幂 出自oi-wiki <em>&#x2F;long long binpow(long long a, long long b){    long long result &#x3D; 1;​    while (b &gt; 0)    {        if (b &amp; 1)            result &#x3D; result * a;        a &#x3D; a * a;        b &gt;&gt;&#x3D; 1;    }​    return result;}​&#x2F;</em> * 高精度模板 <em>&#x2F;class BigInt{public:    &#x2F;&#x2F; 存储高精度数字    int data[max_size] &#x3D; {0};​    &#x2F;&#x2F; 默认初始化    BigInt() &#x3D; default;​    &#x2F;</em>     * 带默认参数的初始化     <em>&#x2F;    BigInt(size_t a)    {        &#x2F;</em>         * size_t &#x3D; unsigned long long         *         * 在语义上，size_t通常用来表示数组下标（或大小）的类型         * 此处直接使用size_t偷懒         <em>&#x2F;​        &#x2F;&#x2F; 由于算法问题，个位数特殊处理        data[max_size - 1] &#x3D; a % 10;​        &#x2F;&#x2F; floor是向下取整 通过log10获取a的十进制位数        for (int i &#x3D; max_size - 2; i &gt;&#x3D; max_size - 1 - floor(log10(a)); i–)        {            &#x2F;</em>             * 这里需要详细解释一下             *             * 对于一个数字a，我们可以写作类似下列形式             *             * 123456             *    ^ 如果我们想要获取这个 4             *             * 可以先 a % 100 得到后三位 456             * 然后再 a % 10  得到后两位 56             *             * 两者相减 得到 400             *             * 最后除以这个数字的位权，得到 4             <em>&#x2F;            data[i] &#x3D; (a % binpow(10, max_size - i) - a % binpow(10, max_size - 1 - i)) &#x2F; binpow(10, max_size - 1 - i);        }    }​    &#x2F;</em>     * 高精度加法     <em>&#x2F;    BigInt operator+(BigInt other)    {        &#x2F;</em>         * 高精度加法实际上就是常见的竖式加法，注意处理进位就好了         <em>&#x2F;​        &#x2F;&#x2F; 返回值        BigInt result;​        &#x2F;&#x2F; 进位        int add &#x3D; 0;​        &#x2F;&#x2F; 这里可以优化 但是都是O(n) 不TLE就不用扣这么细        for (int i &#x3D; max_size - 1; i &gt;&#x3D; 0; i–)        {            &#x2F;&#x2F; 加法            result.data[i] &#x3D; data[i] + other.data[i] + add;            &#x2F;&#x2F; 进位            add &#x3D; result.data[i] &#x2F; 10;            &#x2F;&#x2F; 取个位数            result.data[i] %&#x3D; 10;        }​        return result;    }​    &#x2F;</em>     * 高精度乘法      <em>&#x2F;    BigInt operator</em>(BigInt other)    {        &#x2F;*         * 比较朴素的算法就是O(n^2)的模拟竖式         * 但是如果位数比较大，则需要快速傅里叶变幻FFDT(FFT)来实现O(nlogn)         <em>&#x2F;​        &#x2F;&#x2F; 返回值        BigInt result(0);​        &#x2F;</em>         * 开始模拟竖式         * 注意，这里实际上i相当于乘法时“底下的数”         <em>&#x2F;        for (int i &#x3D; max_size - 1; i &gt;&#x3D; 0; i–)        {            &#x2F;&#x2F; 进位            int add_number &#x3D; 0;​            &#x2F;&#x2F; 循环“上面的数”            for (int j &#x3D; max_size - 1; j &gt;&#x3D; 0; j–)            {                &#x2F;&#x2F; 这里定义pushed_number表示结果在result对应的位置                const int pushed_number &#x3D; i - (max_size - 1 - j);​                &#x2F;&#x2F; 相乘 注意一定是 “+&#x3D;” 警钟长鸣！                result.data[pushed_number] +&#x3D; data[i] * other.data[j] + add_number;                &#x2F;&#x2F; 取进位数                add_number &#x3D; result.data[pushed_number] &#x2F; 10;                &#x2F;&#x2F; 取个位数                result.data[pushed_number] %&#x3D; 10;            }        }​        return result;    }​    &#x2F;</em>     * 这里需要解释一下，像下面这样做会有性能损失，但在时间紧的情况下可以忽略     * 如果你没有那么紧迫的时间，建议你将上面对应的代码复制下来，粘贴到对应的函数上     * 将result的变量定义删除，然后将代码中的形如result.data[…]形式的代码改为data[…]     * 这里没有这么做是为了保持模板简洁     *&#x2F;    void operator+&#x3D;(BigInt other)    {        *this &#x3D; <em>this + other;    }​    void operator</em>&#x3D;(BigInt other)    {        *this &#x3D; *this * other;    }};c++<br>$$<br>dis(y)&#x3D;D(y) \le D(e) \lt dis(e)<br>$$<br>但是因为过程 1 的条件，$ e $ 被取走时， $ e $ 一定是估计最短路最小的，而 $ y $ 没有取走，在比较范围内，所以一定有 $ dis(y) \ge dis(e) $ 。</p>
+<p>但此与前文不等式链相矛盾，所以假设不成立，命题得证。</p>
+<p>本证明大部分都取自 <a target="_blank" rel="noopener" href="https://oi.wiki/graph/shortest-path/#%E6%AD%A3%E7%A1%AE%E6%80%A7%E8%AF%81%E6%98%8E">OI Wiki</a> .</p>
+
+    </div>
+    
+    
+    
+    
+    <div id="comment">
+        <div id="giscus-container" class="giscus"></div>
+    </div>
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Liserver&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Liserver
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+<script
+    src="https://giscus.app/client.js"
+    data-repo="LiserverYang/LiserverYang.github.io"
+    data-repo-id="R_kgDOLIJvHA"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOLIJvHM4CcmmM"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin
+    async
+></script>
+
+
+
+
+
+    
+</body>
+</html>

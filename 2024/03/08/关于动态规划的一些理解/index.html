@@ -29,6 +29,11 @@
 <script src="/js/lib/highlight.js"></script>
 
 
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
 
 <script src="/js/lib/preview.js"></script>
 
@@ -184,7 +189,7 @@
 
 <h2 id="2-常见的动态规划类型以及理解"><a href="#2-常见的动态规划类型以及理解" class="headerlink" title="2. 常见的动态规划类型以及理解"></a>2. 常见的动态规划类型以及理解</h2><h3 id="2-1-背包DP"><a href="#2-1-背包DP" class="headerlink" title="2.1 背包DP"></a>2.1 背包DP</h3><p>背包问题是动态规划的一个分支。对于大部分人而言，背包DP更容易理解、入门动态规划。</p>
 <p>背包问题本质是在多个种类物品之间做选择。由于[重量]等原因对于选择做了限制，通常求选择的最优解。</p>
-<h4 id="2-1-1-01背包"><a href="#2-1-1-01背包" class="headerlink" title="2.1.1 01背包"></a>2.1.1 01背包</h4><p>01背包是背包问题的一种。该类问题需要在多个种类的物品之间做出选择，每个种类只能选择一个，由于[选与不选]的特性，类似于二进制中的01[真假]，所以称为01背包。</p>
+<h4 id="2-1-1-01背包"><a href="#2-1-1-01背包" class="headerlink" title="2.1.1 01背包"></a>2.1.1 01背包</h4><p>01背包是背包问题的一种。该类问题需要在多个种类的物品之间做出选择，每个种类只能选择一个，由于“选与不选”的特性，类似于二进制中的01[真假]，所以称为01背包。</p>
 <p>下面对于01背包一个例题：</p>
 <p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2871">P2871 [USACO07DEC] Charm Bracelet S - 洛谷</a></p>
 <p>题目大意：</p>
@@ -201,15 +206,15 @@
 </code></pre>
 <p>解题思路：</p>
 <p>这是一道01背包问题的模板题。对于容量 <em>M</em> 的背包，装 <em>x</em> 个物品使其总价值 <em>D</em> 最大。最先想到的可能是贪心。但是由于重量的存在，使得价值最高可能不是收益最高。高价值高重量的物品可能不及多个低价值低重量物品之和。所以应该使用<strong>动态规划</strong>。</p>
-<p>假设我们有<em>f(u, v)<em>。它表示拿前 *u</em> 件物品且剩余容量是 *v</em> 时的最优解，不难看出，*f(N, M)*是这道题的答案。</p>
-<p>那么我们就将求这道题的答案转化为了求*f(N, M)<em>。我们首先需要把</em>f(u, v)*表示出来。</p>
-<p><strong>我们只关注于第u件物品，它有取与不取两种可能。</strong>若是取，则剩余<em>v-Wi</em>的空间，获得了<em>Di</em>价值的物品。若是不取，则空间没有变化，得到的价值也没有变化。</p>
+<p>假设我们有 $f(u, v)$ 。它表示拿前 $u$ 件物品且剩余容量是 $v$ 时能拿到的最大值，不难看出，$f(N, M)$ 是这道题的答案。</p>
+<p>那么我们就将求这道题的答案转化为了求 $f(N, M)$。我们首先需要把 $f(u, v)$ 表示出来。</p>
+<p><strong>我们只关注于第 u 件物品，它有取与不取两种可能。</strong>若是取，则剩余 $v-W_i$ 的空间，获得了 $D_i$ 价值的物品。若是不取，则空间没有变化，得到的价值也没有变化。</p>
 <p>不管取了还是不取，<strong>我们都对第u件物品做出了决策</strong>。我们需要在两个决策中选择一个最好的。所以我们需要知道两个决策的价值并比较。</p>
-<p>对于取了的情况，我们得到的价值是剩余的空间取前 <em>u-1</em> 个物品的最大价值加上这件物品的价值。即 <em>f(u-1, v-Di)+Wi</em>。</p>
-<p>对于没有取的情况，我们得到的价值是目前的空间前 <em>u-1</em> 个物品的最大价值。即 <em>f(u-1, v)</em></p>
-<p>最后，<strong>我们对两个决策之间选择一个最大值，就是f(u, v)的最优解</strong>：</p>
-<p>f(u,v) &#x3D; max{f(u-1, v-Di) + Wi, f(u-1, v)}</p>
-<p>这就是这道题的状态转移方程。由于这道题是模板题，实际上所有的01背包方程都是基于这个方程推导出来的。</p>
+<p>对于取了的情况，我们得到的价值是剩余的空间取前 <em>u-1</em> 个物品的最大价值加上这件物品的价值。即 $f(u-1, v-D_i)+W_i$ .</p>
+<p>对于没有取的情况，我们得到的价值是目前的空间前 <em>u-1</em> 个物品的最大价值。即 $f(u-1, v)$ . </p>
+<p>最后，<strong>我们对两个决策之间选择一个最大值，就是 f(u, v) 的最优解</strong>：</p>
+<p>$$<br>f(u,v) &#x3D; \max{f(u-1, v-D_i) + W_i, f(u-1, v)}<br>$$<br>这就是这道题的状态转移方程。</p>
+<p>由于这道题是模板题，实际上所有的01背包方程都是基于这个方程推导出来的。</p>
 <p>核心代码：</p>
 <pre><code class="c++">// C++
 for(int i = 1; i &lt;= N; i++) // 循环从1开始，可以避免处理越界行为，DP默认初始化0
@@ -228,10 +233,9 @@ for(int i = 1; i &lt;= N; i++) // 循环从1开始，可以避免处理越界行
 &#125;
 </code></pre>
 <p>优化：</p>
-<p>仔细观察状态转移方程。发现对于 <em>f(u,v)</em> 有影响的只有 <em>u-1</em> ，所以我们就可以将状态转移方程压缩为一维，即一个参数。</p>
-<p>假设有状态转移方程 <em>f(v)</em> 表示剩余空间为 <em>v</em> 时的最优解。写出状态转移方程：</p>
-<p>f(v)&#x3D;max{f(v), f(v-Di)+Wi}</p>
-<p>优化后的核心代码：</p>
+<p>仔细观察状态转移方程。发现对于 $f(u,v)$ 有影响的只有 $u-1$ ，所以我们就可以将状态转移方程压缩为一维，即一个参数。</p>
+<p>假设有状态 $f(v)$ 表示剩余空间为 $v$ 时的最优解，写出状态转移方程：</p>
+<p>$$<br>f(v)&#x3D;\max{f(v), f(v-D_i)+W_i}<br>$$<br>优化后的核心代码：</p>
 <pre><code class="c++">for(int i = 1; i &lt;= N; i++)
 &#123;
     for(int j = M; j &gt;= W[i]; j--)
@@ -244,27 +248,17 @@ for(int i = 1; i &lt;= N; i++) // 循环从1开始，可以避免处理越界行
 <p>[P1049 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1049">NOIP2001 普及组] 装箱问题 - 洛谷</a></p>
 <p>[P1048 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1048">NOIP2005 普及组] 采药 - 洛谷</a></p>
 <h4 id="2-1-2-完全背包"><a href="#2-1-2-完全背包" class="headerlink" title="2.1.2 完全背包"></a>2.1.2 完全背包</h4><p>完全背包是背包问题的一种。它与01背包不同，01背包每类物品只能取一次，而完全背包每类物品能取无数次。</p>
+<p>实际上，由于“背包容量”的限制，实际能取到的数量是有限的，这也是需要决策取舍的地方。</p>
 <p>例题：</p>
 <p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1616">P1616 疯狂的采药 - 洛谷</a></p>
 <p>题目大意：</p>
-<p>在总共 <em>t</em> 的时间内，对 <em>m</em> 种草药中进行无数量限制的采摘。对于每类草药，有 <em>Ai</em> 和 <em>Bi</em> 分别表示草药的采集时间和价值。</p>
-<p>输入样例：</p>
-<pre><code class="plaintext">70 3
-71 100
-69 1
-1 2
-</code></pre>
-<p>输出样例：</p>
-<pre><code class="plaintext">140
-</code></pre>
+<p>在总共 $t$ 的时间内，对 $m$ 种草药中进行无数量限制的采摘。对于每类草药，有 $A_i$ 和 $B_i$ 分别表示草药的采集时间和价值。</p>
 <p>解题思路：</p>
-<p>这是一个完全背包问题。我们将决策从<strong>取与不取</strong>转换到<strong>取多少</strong>。我们用 <em>k</em> 来表示取 <em>k</em> 个草药。</p>
-<p>假设有状态转移方程 <em>f(u,v)</em> 。表示在剩余背包空间为 <em>v</em> 时对前 <em>u</em> 种草药做决策后的最优解。不难发现，<em>f(m, t)</em> 是本题答案。</p>
-<p>如果对第 <em>u</em> 种草药取了 <em>k</em> 个，那么获得的收益为：f(u-1, v-k * Ai)+k * Bi.</p>
-<p>特别地，如果没有取，则k&#x3D;0，所以 <em>k</em> 的取值范围是[0, +∞].</p>
-<p>写出状态转移方程：</p>
-<p>f(u, v)&#x3D;max{u-1, v-k<em>Ai}+k</em>Bi (k∈[0, +∞])</p>
-<p>核心代码：</p>
+<p>这是一个完全背包问题。我们将决策从<strong>取与不取</strong>转换到<strong>取多少</strong>。我们用 $k$ 来表示取 $k$ 个草药。</p>
+<p>有状态 $f(u,v)$ 。表示在剩余背包空间为 $v$ 时对前 $u$ 种草药做决策后的最优解。不难发现，$f(m, t)$ 是本题答案。</p>
+<p>如果对第 $u$ 种草药取了 $k$ 个，那么获得的收益为：<br>$$<br>f(u-1, v-k \times A_i)+k \times B_i<br>$$<br>特别地，如果没有取，则 $k&#x3D;0$ ，所以 $k$ 的取值范围是 $[0, +\infty)$ .</p>
+<p>状态转移方程：</p>
+<p>$$<br>f(u, v)&#x3D;\max_{k&#x3D;0}^{\infty}{f(u-1, v-k \times A_i)+k \times B_i}<br>$$<br>核心代码：</p>
 <pre><code class="c++">for(int i = 1; i &lt;= m; i++)
 &#123;
     for(int j = 1; j &lt;= t; j++)
@@ -276,10 +270,9 @@ for(int i = 1; i &lt;= N; i++) // 循环从1开始，可以避免处理越界行
     &#125;
 &#125;
 </code></pre>
-<p>这是一个O(n^3)的算法。是否能像01背包一样优化？</p>
-<p>实际上，对于 <em>f(u,v)</em> 可以不枚举 <em>k</em> ，即：</p>
-<p>f(u,v)&#x3D;max{f(u-1, v), f(u-1, v-Ai) + Bi}</p>
-<p>对于核心代码，与01背包的枚举顺序是相反的：</p>
+<p>这是一个 $O(n^3)$ 的算法。是否能像01背包一样优化？</p>
+<p>实际上，对于 $f(u,v)$ 可以不枚举 $k$ ，即：</p>
+<p>$$<br>f(u,v)&#x3D;\max{f(u-1, v), f(u-1, v-Ai) + Bi}<br>$$<br>对于核心代码，与01背包的枚举顺序是相反的：</p>
 <pre><code class="c++">for(int i = 1; i &lt;= m; i++)
 &#123;
     for(int j = 0; j &lt;= t - A[i]; j++) // 与01背包相反的枚举顺序
@@ -288,13 +281,13 @@ for(int i = 1; i &lt;= N; i++) // 循环从1开始，可以避免处理越界行
     &#125;
 &#125;
 </code></pre>
-<p>时间复杂度O(n^2)</p>
+<p>时间复杂度 $O(n^2)$ .</p>
 <h3 id="2-2-区间DP"><a href="#2-2-区间DP" class="headerlink" title="2.2 区间DP"></a>2.2 区间DP</h3><p>区间DP是对一个区间进行合并，求合并操作后的最优解。</p>
 <p>区间DP最经典的例题就是石子合并。实际上这道题还可以进行四边形不等式优化，在这里不展开，参见后文DP优化。</p>
 <p>例题：</p>
-<p>[P1880 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1880">NOI1995] 石子合并 - 洛谷</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1880">P1880 [NOI1995] 石子合并 - 洛谷</a></p>
 <p>题目大意：</p>
-<p>在一个圆形操场的四周摆放 <em>N</em> 堆石子，现要将石子有次序地合并成一堆，规定每次只能选相邻的 <em>2</em> 堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。求得分的最大值和最小值。</p>
+<p>在一个圆形操场的四周摆放 $N$ 堆石子，现要将石子有次序地合并成一堆，规定每次只能选相邻的 <em>2</em> 堆合并成新的一堆，并将新的一堆的石子数，记为该次合并的得分。求得分的最大值和最小值。</p>
 <p>样例输入：</p>
 <pre><code class="plaintext">4
 4 5 9 4
@@ -305,20 +298,16 @@ for(int i = 1; i &lt;= N; i++) // 循环从1开始，可以避免处理越界行
 </code></pre>
 <p>解题思路：</p>
 <p>这是一道区间DP模板题。非常经典。我们先不考虑环形的问题。假设他是直线的。</p>
-<p>对于这道题，有状态转移方程 <em>f(i,j)</em> 表示在区间 <em>i</em> 到 <em>j</em> 之内合并后的最大值。显然，对于这道题的无环情况，<em>f(0, N-1)</em> 是答案。</p>
-<p>仍然是表示状态转移方程。对于区间 <em>i</em> 到 <em>j</em> ，我们假设由一个下标 <em>k</em> 。它将区间 <em>i</em> 到 <em>j</em> 由 <em>k</em> 分隔开成两份。左右两边份分别合并成一堆，最后整体合并成一堆。那么求 <em>k</em> 的最优解，就是求 <em>f(i, j)</em> 的最优解。</p>
+<p>对于这道题，有状态转移方程 $f(i,j)$ 表示在区间 $i$ 到 $j$ 之内合并后的最大值。显然，对于这道题的无环情况，$f(0, N-1)$ 是答案。</p>
+<p>仍然是表示状态转移方程。对于区间 $i$ 到 $j$ ，我们假设由一个下标 $k$ 。它将区间 $i$ 到 $j$ 由 $k$ 分隔开成两份。左右两边份分别合并成一堆，最后整体合并成一堆。那么求 $k$ 的最优解，就是求 $f(i, j)$ 的最优解。</p>
 <p>我们使用枚举法：</p>
-<p>f(i, j)&#x3D;max&#x2F;min{f(i, k) + f(k + 1, j) + cost}</p>
-<p>其中：k从i到j-1进行枚举。cost是合并 <em>i</em> 到 <em>j</em> 后获得的收收益。对于此题，<em>cost&#x3D;Σ(n&#x3D;i, j)An</em>。An表示第n堆小石子的数量。</p>
-<p>然后设sum为A的前缀和。状态转移方程转化为：</p>
-<p>f(i, j)&#x3D;max&#x2F;min{f(i, k) + f(k + 1, j) + sum(j) - sum(i-1)}</p>
-<p>随后我们设 <em>length&#x3D;j-i-1</em> 。那么枚举所有的 <em>length</em> 。随后枚举所有的 <em>i</em> ，随后求出 <em>j</em> 。列举所有的 <em>k</em> 进行状态转移。时间复杂度 <em>O(n^3)</em> 。</p>
+<p>$$<br>f(i, j)&#x3D;\max{f(i, k) + f(k + 1, j) + cost}<br>$$<br>其中：$k$ 从 $i$ 到 $j-1$ 进行枚举。cost是合并 $i$ 到 $j$ 后获得的收益。对于此题，$cost&#x3D;\sum_{n&#x3D;i}^jA_n$ 。$A_n$ 表示第 $n$ 堆小石子的数量。</p>
+<p>然后设 $sum$ 为 $A$ 的前缀和。状态转移方程转化为：</p>
+<p>$$<br>f(i, j)&#x3D;\max{f(i, k) + f(k + 1, j) + sum(j) - sum(i-1)}<br>$$<br>随后我们设 $length&#x3D;j-i-1$ 。那么枚举所有的 $length$ 。随后枚举所有的 $i$ ，求出 $j$ 。列举所有的 $k$ 进行状态转移。时间复杂度 $O(n^3)$ 。</p>
 <p>如果你看到这里想要试一试，不妨尝试这道简化版无环：</p>
 <p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1775">P1775 石子合并（弱化版） - 洛谷</a></p>
 <p>如何处理环？</p>
-<p>我们将原数组 <em>An</em> 扩展到原来的二倍。<em>An</em> <em>&#x3D;</em> <em>A2n</em> 。随后我们使用动态规划求解。最终的答案为：</p>
-<p>answer&#x3D;max{f(a + 1, a + n)} (a∈[0, N-2])</p>
-<p>核心代码：</p>
+<p>我们将原数组 $A$ 扩展到原来的二倍。$A_n &#x3D; A_{2n}$ 。随后我们使用动态规划求解。最终的答案为：<br>$$<br>answer&#x3D;\max{f(a + 1, a + n)} (a\in[0, N-2])<br>$$<br>核心代码：</p>
 <pre><code class="c++">for(int l = 2; l &lt;= N; l ++) // 枚举所有可能的长度
 &#123;
     for(int i = 1; i &lt;= 2 * N + 1 - l; i++) // 枚举所有的i
@@ -329,89 +318,6 @@ for(int i = 1; i &lt;= N; i++) // 循环从1开始，可以避免处理越界行
             DP[i][j] = std::max(DP[i][j], DP[i][k] + DP[k + 1][j] + sum[j] - sum[i - 1]); // 状态转移方程
         &#125;
     &#125;
-&#125;
-</code></pre>
-<p>这道题求最大值和最小值，考虑到与核心代码出入较大，所以给出例题代码（洛谷AC | 抄袭可耻）：</p>
-<pre><code class="c++">// std::cin &amp; std::cout
-#include &lt;iostream&gt;
- 
-// 定义最大值最小值
-#define MAX 0xffffff
-#define MIN 0
- 
-// 定义最大的N长度
-#define N_SIZE 205
- 
-// 主函数
-int main()
-&#123;
-    // 输入的数组
-    int nums[N_SIZE] = &#123;0&#125;;
- 
-    // 前缀和
-    int sum[N_SIZE] = &#123;0&#125;;
- 
-    // 最大值与最小值
-    int DP[N_SIZE][N_SIZE] = &#123;&#123;0&#125;&#125;;
-    int DPM[N_SIZE][N_SIZE]= &#123;&#123;0&#125;&#125;;
- 
-    // 总共长度
-    int N;
-    std::cin &gt;&gt; N;
- 
-    // 循环输入
-    for(int i = 1; i &lt;= N; i++)
-    &#123;
-        // 获取输入
-        std::cin &gt;&gt; nums[i];
-        nums[i + N] = nums[i];
-    &#125;
- 
-    // 计算前缀和
-    for(int i = 1; i &lt;= 2 * N; i++)
-    &#123;
-        sum[i] = sum[i - 1] + nums[i];
-    &#125;
-    
-    // 循环枚举长度l
-    for(int l = 2; l &lt;= N; l ++)
-    &#123;
-        // 循环枚举合法的i
-        for(int i = 1; i &lt;= 2 * N + 1 - l; i++)
-        &#123;
-            // 通过长度l与i计算j
-            int j = l + i - 1;
- 
-            // 初始化DP/DPM[i][j] 防止计算最大/最小值时出现问题
-            DP[i][j] = MIN;
-            DPM[i][j] = MAX;
- 
-            // 枚举所有可能的k
-            for(int k = i; k &lt; j; k++)
-            &#123;
-                // 状态转移方程
-                DP[i][j]  = std::max(DP[i][j],  DP[i][k]  + DP[k + 1][j]  + sum[j] - sum[i - 1]);
-                DPM[i][j] = std::min(DPM[i][j], DPM[i][k] + DPM[k + 1][j] + sum[j] - sum[i - 1]);
-            &#125;
-        &#125;
-    &#125;
- 
-    // 最大值与最小值
-    int res = MIN;
-    int resm = MAX;
- 
-    // 处理环状的最优解
-    for(int i = 1; i &lt;= N; i++)
-    &#123;
-        res  = std::max(res,  DP[i][i + N - 1]);
-        resm = std::min(resm, DPM[i][i + N - 1]);
-    &#125;
- 
-    // 输出答案
-    std::cout &lt;&lt; resm &lt;&lt; &quot;\n&quot; &lt;&lt; res;
-    
-    // 默认返回值0
-    return 0;
 &#125;
 </code></pre>
 

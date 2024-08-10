@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>C++ Prime的原文翻译及理解（其一） | Liserver&#39;s Blog</title>
+    <meta name="author" content="Liserver" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.1.1"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>LISERVER&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;LISERVER&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>C++ Prime的原文翻译及理解（其一）</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/11
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/C/" style="color: #ff7d73">C++</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="C-Prime的原文翻译及理解（其一）"><a href="#C-Prime的原文翻译及理解（其一）" class="headerlink" title="C++ Prime的原文翻译及理解（其一）"></a>C++ Prime的原文翻译及理解（其一）</h1><h2 id="C-Prime-5th-的在线阅读地址"><a href="#C-Prime-5th-的在线阅读地址" class="headerlink" title="C++ Prime 5th 的在线阅读地址"></a>C++ Prime 5th 的在线阅读地址</h2><p><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/000-cpp_primer_fifth_edition.html">C++ Primer, Fifth Edition (cpp-primer.pages.dev)</a></p>
+<h2 id="对于英语翻译问题的总述以及免责声明"><a href="#对于英语翻译问题的总述以及免责声明" class="headerlink" title="对于英语翻译问题的总述以及免责声明"></a>对于英语翻译问题的总述以及免责声明</h2><p>本人只是C++爱好者以及OIer，对于本书中的C++、计算机相关术语按照本人的理解以及C++ reference翻译，一切翻译问题可以在留言下发布。<strong>但请友善发言</strong>。</p>
+<p>本文仅作为学习使用，侵删。</p>
+<span id="more"></span>
+
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>此文包含了全书的第一章，以下是目录：</p>
+<p><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/010-chapter_1._getting_started.html#filepos113276">Chapter 1 Getting Started 第一章 开始</a></strong><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/011-1.1._writing_a_simple_cpp_program.html#filepos117760">1.1 Writing a Simple C++ Program 编写一个简单的C++程序</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/011-1.1._writing_a_simple_cpp_program.html#filepos124263">1.1.1 Compiling and Executing Our Program 编译和执行我们的程序</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/012-1.2._a_first_look_at_inputoutput.html#filepos136281">1.2 A First Look at Input&#x2F;Output 第一次审视输入&#x2F;输出</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/013-1.3._a_word_about_comments.html#filepos157648">1.3 A Word about Comments 一句注释</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/014-1.4._flow_of_control.html#filepos166172">1.4 Flow of Control</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/014-1.4._flow_of_control.html#filepos166704">1.4.1 The <code>while</code> Statement</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/014-1.4._flow_of_control.html#filepos180866">1.4.2 The <code>for</code> Statement</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/014-1.4._flow_of_control.html#filepos191453">1.4.3 Reading an Unknown Number of Inputs</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/014-1.4._flow_of_control.html#filepos203410">1.4.4 The <code>if</code> Statement</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/015-1.5._introducing_classes.html#filepos219539">1.5 Introducing Classes</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/015-1.5._introducing_classes.html#filepos222335">1.5.1 The <code>Sales_item</code> Class</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/015-1.5._introducing_classes.html#filepos237516">1.5.2 A First Look at Member Functions</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/016-1.6._the_bookstore_program.html#filepos244566">1.6 The Bookstore Program</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/017-chapter_summary.html#filepos253310">Chapter Summary</a><br><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos254268">Defined Terms</a></p>
+<h2 id="Chapter-1-Getting-Started-第一章-开始"><a href="#Chapter-1-Getting-Started-第一章-开始" class="headerlink" title="Chapter 1 Getting Started 第一章 开始"></a>Chapter 1 Getting Started 第一章 开始</h2><h3 id="1-1-Writing-a-Simple-C-Program-编写一个简单的C-程序"><a href="#1-1-Writing-a-Simple-C-Program-编写一个简单的C-程序" class="headerlink" title="1.1 Writing a Simple C++ Program 编写一个简单的C++程序"></a>1.1 Writing a Simple C++ Program 编写一个简单的C++程序</h3><p>Every C++ program contains one or more <em><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos261712">functions</a></strong></em>, one of which must be named <code>main</code>. The operating system runs a C++ program by calling <code>main</code>. Here is a simple version of <code>main</code> that does nothing but return a value to the operating system:</p>
+<p>每一个 C++ 程序包含了一个及以上的***<a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos261712">函数</a>***，其中必须有一个叫做<code>main</code>的函数。操作系统运行一个 C++ 程序是通过调用<code>main</code>。这里是一个简单的<code>main</code>版本，它什么也没做，但是返回了一个值给操作系统：</p>
+<pre><code class="c++">int main()
+&#123;
+    return 0;
+&#125;
+</code></pre>
+<p>A function definition has four elements: a <em><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos266268">return type</a></strong></em>, a <em><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos262140">function name</a></strong></em>, a (possibly empty) <em><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos265970">parameter list</a></strong></em> enclosed in parentheses, and a <em><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos261909">function body</a></strong></em>. Although <code>main</code> is special in some ways, we define <code>main</code> the same way we define any other function.</p>
+<p>一个函数定义有四个部分：一个<strong>返回类型</strong>、一个<strong>函数名</strong>、一个（也许为空的）括号内的<strong>参数列表</strong>，以及一个<strong>函数体</strong>。即使<code>main</code>函数在某些方面与其他函数不同，但是我们定义<code>main</code>函数时仍然需要以与其它函数相同的方式去定义它。</p>
+<p>In this example, <code>main</code> has an empty list of parameters (shown by the <code>()</code> with nothing inside). § <a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/064-6.2._argument_passing.html#filepos1526324">6.2.5</a> (p. <a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/064-6.2._argument_passing.html#filepos1526324">218</a>) will discuss the other parameter types that we can define for <code>main</code>.</p>
+<p>在这个例子中，<code>main</code>函数包括了一个空的参数列表（以什么也没有的 () 形式展现出来）。在部分<a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/064-6.2._argument_passing.html#filepos1526324">6.2.5</a>（页码<a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/064-6.2._argument_passing.html#filepos1526324">218</a>）的位置将会讨论在<code>main</code>函数中其它的、我们所能定义的参数类型。</p>
+<p>The <code>main</code> function is required to have a return type of <code>int</code>, which is a type that represents integers. The <code>int</code> type is a <strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos255779">built-in type</a></strong>, which means that it is one of the types the language defines.</p>
+<p><code>main</code>函数被要求有一个<code>int</code>类型的返回类型，它是一个代表整数的类型。<code>int</code>类型是一个**<a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos255779">内置类型</a>**，这意味着它是一个语言所定义的类型之一。</p>
+<p>The final part of a function definition, the function body, is a <em><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos254859">block</a></strong></em> of <em><strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos268219">statements</a></strong></em> starting with an open <strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos259548">curly brace</a></strong> and ending with a close curly:</p>
+<p>在函数定义的最后一部分——函数体，是一个***<a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos254859">块</a><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos268219">语句</a>*<strong>。以左</strong><a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/018-defined_terms.html#filepos259548">花括号</a>**开始，以右花括号结束：</p>
+<pre><code class="c++">&#123;
+    return 0;
+&#125;
+</code></pre>
+<p>The only statement in this block is a <code>return</code>, which is a statement that terminates a function. As is the case here, a <code>return</code> can also send a value back to the function’s caller. When a <code>return</code> statement includes a value, the value returned must have a type that is compatible with the return type of the function. In this case, the return type of <code>main</code> is <code>int</code> and the return value is <code>0</code>, which is an <code>int</code>.</p>
+<p>这个块中唯一一个语句是一个<code>return</code>语句，一个终止函数的语句。在这个示例中，<code>return</code>也可以发送一个返回值给函数的调用者。当<code>return</code>语句包含的一个值的时候，被返回的值必须是一个与函数返回值相容的类型。在这个示例中，<code>main</code>函数的返回值是一个<code>int</code>并且此处的返回值是<code>0</code>，是一个<code>int</code>类型。</p>
+<p>INFO</p>
+<p>Note the semicolon at the end of the <code>return</code> statement. Semicolons mark the end of most statements in C++. They are easy to overlook but, when forgotten, can lead to mysterious compiler error messages.</p>
+<p>信息</p>
+<p>请注意在<code>return</code>语句后面的分号。分号标记着大多数语句的结尾。它们很容易被忽视，但是，当你忘记的时候，它会导致神秘的编译器报错。</p>
+<p>On most systems, the value returned from <code>main</code> is a status indicator. A return value of <code>0</code> indicates success. A nonzero return has a meaning that is defined by the system. Ordinarily a nonzero return indicates what kind of error occurred.</p>
+<p>在大多数系统中，<code>main</code>函数的返回值是一个状态标志。返回值<code>0</code>标志成功。一个非零的返回值则有一个由系统定义的含义。通常，一个非零的返回值意味着一种错误发生。</p>
+<p>INFO</p>
+<p>Key Concept: Types</p>
+<p>Types are one of the most fundamental concepts in programming and a concept that we will come back to over and over in this Primer. A type defines both the contents of a data element and the operations that are possible on those data.</p>
+<p>The data our programs manipulate are stored in variables and every variable has a type. When the type of a variable named <code>v</code> is <code>T</code>, we often say that “<code>v</code> has type <code>T</code>” or, interchangeably, that “<code>v</code> is a <code>T</code>.”</p>
+<p>信息</p>
+<p>关键字概念：类型</p>
+<p>类型是大多数编程中的基本概念之一，并且在这本书中我们会一遍又一遍地温习这个概念。一个类型的定义包含了数据元素的内容以及对这些数据可能的操作。</p>
+<p>我们程序操作的数据存储在变量里并且每一个变量都有一个对应的类型。当一个叫<code>v</code>的变量的类型是<code>T</code>，我们通常会说：“<code>v</code>有一个类型·<code>T</code>，或是说<code>v</code>是一个<code>T</code>类型”。</p>
+<h4 id="1-1-1-Compiling-and-Executing-Our-Program-编译和执行我们的程序"><a href="#1-1-1-Compiling-and-Executing-Our-Program-编译和执行我们的程序" class="headerlink" title="1.1.1 Compiling and Executing Our Program 编译和执行我们的程序"></a>1.1.1 Compiling and Executing Our Program 编译和执行我们的程序</h4><p>Having written the program, we need to compile it. How you compile a program depends on your operating system and compiler. For details on how your particular compiler works, check the reference manual or ask a knowledgeable colleague.</p>
+<p>已经编写好程序以后，我们需要编译它。怎样编译你的程序决定于你的操作系统以及编译器。有关于编译器工作方式的详细描述，请查看参考手册或者问问一个知识渊博的同事。</p>
+<p>Many PC-based compilers are run from an integrated development environment (IDE) that bundles the compiler with build and analysis tools. These environments can be a great asset in developing large programs but require a fair bit of time to learn how to use effectively. Learning how to use such environments is well beyond the scope of this book.</p>
+<p>许多基于PC的编译器都运行在集成开发环境（IDE）上，把编译器和开发工具捆绑在一起。这些环境在开发大型项目时是一笔巨大的财富，但是却需要相当多的时间来学习如何有效的使用。学习如何使用这种环境却远远超出了本书的范围。</p>
+<p>If we are using a command-line interface, we will typically compile a program in a console window (such as a shell window on a UNIX system or a Command Prompt window on Windows). Assuming that our <code>main</code> program is in a file named <code>prog1.cc</code>, we might compile it by using a command such as</p>
+<p>如果我们在使用命令行界面，我们将会通常在一个控制台窗口中编译程序（例如UNIX系统上的shall窗口或者Windows系统上的命令提示符）。若我们的<code>main</code>程序是一个叫做<code>prog1.cc</code>的程序，我们可以通过命令行编译它，例如：</p>
+<pre><code class="shell">$ CC prog1.cc
+</code></pre>
+<p>where <code>CC</code> names the compiler and <code>$</code> is the system prompt. The compiler generates an executable file. On a Windows system, that executable file is named <code>prog1.exe</code>. UNIX compilers tend to put their executables in files named <code>a.out</code>.</p>
+<p><code>CC</code>是编译器的名字，<code>$</code>是系统提示符。编译器生成一个可执行文件。在一个WIndows操作系统上，可执行文件叫做<code>prog1.exe</code>。在UNIT编译器往往生成叫做<code>a.out</code>的可执行文件。</p>
+<p>To run an executable on Windows, we supply the executable file name and can omit the <code>.exe</code> file extension:</p>
+<p>在Windows中，我们提供可执行文件名并且可以省略<code>.exe</code>文件后缀来运行可执行文件。</p>
+<pre><code class="bat">prog1
+</code></pre>
+<p>On some systems you must specify the file’s location explicitly, even if the file is in the current directory or folder. In such cases, we would write</p>
+<p>在一些系统中，你必须明确地指明文件的本地位置，不论这个文件是否在当前目录或文件夹中。在这个情况下，我们会写</p>
+<pre><code class="shell">$ .\prog1
+</code></pre>
+<p>The “<code>.</code>” followed by a backslash indicates that the file is in the current directory.</p>
+<p>一个 “ . ”紧随一个反斜线表明文件在当前目录。</p>
+<p>To run an executable on UNIX, we use the full file name, including the file extension:</p>
+<p>如果要在UNIX操作系统中执行可执行文件，我们必须使用文件的全名，包括文件的扩展：</p>
+<pre><code class="shell">$ a.out
+</code></pre>
+<p>If we need to specify the file’s location, we’d use a “<code>.</code>” followed by a forward slash to indicate that our executable is in the current directory:</p>
+<p>如果我们需要指明文件的本地位置，我们需要使用一个 “ . ” 紧随一个正斜线来表示我们可执行文件在当前目录：</p>
+<pre><code class="shell">$ ./a.out
+</code></pre>
+<p>The value returned from <code>main</code> is accessed in a system-dependent manner. On both UNIX and Windows systems, after executing the program, you must issue an appropriate <code>echo</code> command.</p>
+<p><code>main</code>函数的返回值是系统依赖的访问方式。不论UNIX还是Windows系统，在执行程序后，你必须发出相应的<code>echo</code>指令。</p>
+<p>On UNIX systems, we obtain the status by writing</p>
+<p>在UNIX系统中，我们通常这样编写</p>
+<pre><code class="shell">$ echo $?
+</code></pre>
+<p>To see the status on a Windows system, we write</p>
+<p>要查看Windows系统上的状态，我们这样写</p>
+<pre><code class="bat">echo %ERRORLEVEL%
+</code></pre>
+<p>INFO</p>
+<p>Running the GNU or Microsoft Compilers</p>
+<p>信息</p>
+<p>运行GNU或微软编译器。</p>
+<p>The command used to run the C++ compiler varies across compilers and operating systems. The most common compilers are the GNU compiler and the Microsoft Visual Studio compilers. By default, the command to run the GNU compiler is <code>g++</code>:</p>
+<p>shellscript</p>
+<pre><code>$ g++ -o prog1 prog1.cc
+</code></pre>
+<p>Here <code>$</code> is the system prompt. The <code>-o prog1</code> is an argument to the compiler and names the file in which to put the executable file. This command generates an executable file named <code>prog1</code> or <code>prog1.exe</code>, depending on the operating system. On UNIX, executable files have no suffix; on Windows, the suffix is <code>.exe</code>. If the <code>-o prog1</code> is omitted, the compiler generates an executable named <code>a.out</code> on UNIX systems and <code>a.exe</code> on Windows. (Note: Depending on the release of the GNU compiler you are using, you may need to specify <code>-std=c++0x</code> to turn on C++ 11 support.)</p>
+<p>The command to run the Microsoft Visual Studio 2010 compiler is <code>cl</code>:</p>
+<p>bat</p>
+<pre><code>C:\Users\me\Programs&gt; cl /EHsc prog1.cpp
+</code></pre>
+<p>Here <code>C:\Users\me\Programs&gt;</code> is the system prompt and <code>\Users\me\Programs</code> is the name of the current directory (aka the current folder). The <code>cl</code> command invokes the compiler, and <code>/EHsc</code> is the compiler option that turns on standard exception handling. The Microsoft compiler automatically generates an executable with a name that corresponds to the first source file name. The executable has the suffix <code>.exe</code> and the same name as the source file name. In this case, the executable is named <code>prog1.exe</code>.</p>
+<p>Compilers usually include options to generate warnings about problematic constructs. It is usually a good idea to use these options. Our preference is to use <code>-Wall</code> with the GNU compiler, and to use <code>/W4</code> with the Microsoft compilers.</p>
+<p>For further information consult your compiler’s user’s guide.</p>
+<p>INFO</p>
+<p>Exercises Section 1.1.1</p>
+<p><strong>Exercise 1.1:</strong> Review the documentation for your compiler and determine what file naming convention it uses. Compile and run the <code>main</code> program from page <a target="_blank" rel="noopener" href="https://cpp-primer.pages.dev/book/010-chapter_1._getting_started.html#filepos115465">2</a>.</p>
+<p><strong>Exercise 1.2:</strong> Change the program to return <code>-1</code>. A return value of <code>-1</code> is often treated as an indicator that the program failed. Recompile and rerun your program to see how your system treats a failure indicator from <code>main</code>.</p>
+<h3 id="1-2-A-First-Look-at-Input-Output-第一次审视输入-输出"><a href="#1-2-A-First-Look-at-Input-Output-第一次审视输入-输出" class="headerlink" title="1.2 A First Look at Input&#x2F;Output 第一次审视输入&#x2F;输出"></a>1.2 A First Look at Input&#x2F;Output 第一次审视输入&#x2F;输出</h3><h3 id="1-3-A-Word-about-Comments-一句注释"><a href="#1-3-A-Word-about-Comments-一句注释" class="headerlink" title="1.3 A Word about Comments 一句注释"></a>1.3 A Word about Comments 一句注释</h3>
+    </div>
+    
+    
+    
+    
+    <div id="comment">
+        <div id="giscus-container" class="giscus"></div>
+    </div>
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Liserver&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Liserver
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+<script
+    src="https://giscus.app/client.js"
+    data-repo="LiserverYang/LiserverYang.github.io"
+    data-repo-id="R_kgDOLIJvHA"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOLIJvHM4CcmmM"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin
+    async
+></script>
+
+
+
+
+
+    
+</body>
+</html>

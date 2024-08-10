@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>高精度乘法 | Liserver&#39;s Blog</title>
+    <meta name="author" content="Liserver" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.1.1"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>LISERVER&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;LISERVER&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>高精度乘法</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/6/1
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%95%B0%E5%AD%A6/" style="color: #ffa2c4">数学</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E9%AB%98%E7%B2%BE%E5%BA%A6/" style="color: #00a596">高精度</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="高精度"><a href="#高精度" class="headerlink" title="高精度"></a>高精度</h1><span id="more"></span>
+
+<h2 id="高精度的来历"><a href="#高精度的来历" class="headerlink" title="高精度的来历"></a>高精度的来历</h2><p>在C++中，数据的存储大小是有限的。特别是在存储数字的时候，关键字类型不适用于极端场景。所以，衍生出了<strong>高精度</strong>来代替关键字数字类型来存储数字。</p>
+<h2 id="高精度的原理"><a href="#高精度的原理" class="headerlink" title="高精度的原理"></a>高精度的原理</h2><p>高精度本质上是通过存储一个多项式，这个多项式的系数从低到高就是所表示的数字。同样，将 $ x&#x3D;10 $ 带入多项式也可以得出原数。下面是一个样例：<br>$$<br>\begin{aligned}<br>a&amp;&#x3D;3126\<br>F_a(x)&amp;&#x3D;6x^0+2x^1+1x^2+3x^3<br>\end{aligned}<br>$$<br>当 $ x&#x3D;10 $ 时，多项式 $ F_3 $ 得：<br>$$<br>\begin{aligned}<br>F_a(10)&amp;&#x3D;6\times10^0+2\times10^1+1\times10^2+3\times x^3\<br>&amp;&#x3D;6+2\times10+1\times100+3\times1000\<br>&amp;&#x3D;3126<br>\end{aligned}<br>$$</p>
+<h3 id="高精度加法、减法"><a href="#高精度加法、减法" class="headerlink" title="高精度加法、减法"></a>高精度加法、减法</h3><p>对于两个多项式加法，我们直接让对应项的系数相加：<br>$$<br>\begin{aligned}<br>a&amp;&#x3D;3126\<br>b&amp;&#x3D;33126\<br>F_a(x)&amp;&#x3D;6x^0+2x^1+1x^2+3x^3\<br>F_b(x)&amp;&#x3D;6x^0+2x^1+1x^2+3x^3+3x^4<br>\end{aligned}<br>$$<br>$ a $ 与 $ b $ 相加，即 $ F_a $ 与 $ F_b $ 相加，得：<br>$$<br>\begin{aligned}<br>(F_a+F_b)(x)&amp;&#x3D;F_a(x)+F_b(x)\<br>&amp;&#x3D;(6x^0+2x^1+1x^2+3x^3)+(6x^0+2x^1+1x^2+3x^3+3x^4)\<br>&amp;&#x3D;12x^0+4x^1+2x^2+6x^3+3x^4<br>\end{aligned}<br>$$<br> 注意到 $ x^0 $ 项的系数大于 $ 10 $ ，我们进位，得：<br>$$<br>(F_a+F_b)(x)&#x3D;2x^0+5x^1+2x^2+6x^3+3x^4<br>$$<br>当 $ x&#x3D;10 $ 时，多项式 $ (F_a+F_b) $ 得：<br>$$<br>\begin{aligned}<br>(F_a+F_b)(10)&amp;&#x3D;2\times10^0+5\times10^1+2\times10^2+6\times10^3+3\times10^4\<br>&amp;&#x3D;36252<br>\end{aligned}<br>$$<br><strong>注意：我们虽然多项式x可以取任何值，但是进位的操作只在x&#x3D;10的情况下成立。</strong></p>
+<h3 id="高精度乘法"><a href="#高精度乘法" class="headerlink" title="高精度乘法"></a>高精度乘法</h3><p>同上例，a、b的值不变。</p>
+<p>那么：<br>$$<br>\begin{aligned}<br>(F_aF_b)(x)&amp;&#x3D;6x^0F_b+2x^1F_b+1x^2F_b+3x^3F_b\<br>&amp;&#x3D;6x^0+7x^1+8x^2+…+1x^8<br>\end{aligned}<br>$$<br>将 $ x&#x3D;10 $ 带入：<br>$$<br>(F_aF_b)(10)&#x3D;103551876<br>$$<br><strong>注意：通过这样计算的时间复杂度是O(n^2)。如果n大小极端，可以使用快速傅里叶变换&#x2F;快速数论变换优化至O(n*log_2m)。</strong></p>
+<h2 id="高精度的存储"><a href="#高精度的存储" class="headerlink" title="高精度的存储"></a>高精度的存储</h2><p>我们通过上面可以知道，可以把一个数字通过<strong>多项式</strong>存储。而对于一个多项式，我们只需存储每一项的系数。</p>
+<p>在实际的存储中，我们通常使用数组存储一个高精度数字，并且<strong>从右向左</strong>存储，原因是<strong>方便进位</strong>。</p>
+<p>例如，$ 3246 $ 可以存储为：</p>
+<pre><code class="c++">int a[5] = &#123;0, 3, 2, 4, 6&#125;;
+</code></pre>
+<h2 id="高精度的实现"><a href="#高精度的实现" class="headerlink" title="高精度的实现"></a>高精度的实现</h2><p>高精度的实现并不难，但是比较容易出错，所以建议背板。</p>
+<p>在刚才，我们介绍了高精度的原理。实际上，通常的高精度实现中都会用一个耳熟能详的方法写高精度：</p>
+<p>那便是<strong>竖式计算</strong>。</p>
+<p>这里附上我的高精度模板代码：</p>
+<pre><code class="c++">/*
+ * 高精度模板代码，附注释
+ */
+
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+
+using namespace std;
+
+const size_t max_size = 100;
+
+/*
+ * 快速幂 出自oi-wiki
+ */
+long long binpow(long long a, long long b)
+&#123;
+    long long result = 1;
+
+    while (b &gt; 0)
+    &#123;
+        if (b &amp; 1)
+            result = result * a;
+        a = a * a;
+        b &gt;&gt;= 1;
+    &#125;
+
+    return result;
+&#125;
+
+/*
+ * 高精度模板
+ */
+class BigInt
+&#123;
+public:
+    // 存储高精度数字
+    int data[max_size] = &#123;0&#125;;
+
+    // 默认初始化
+    BigInt() = default;
+
+    /*
+     * 带默认参数的初始化
+     */
+    BigInt(size_t a)
+    &#123;
+        /*
+         * size_t = unsigned long long
+         *
+         * 在语义上，size_t通常用来表示数组下标（或大小）的类型
+         * 此处直接使用size_t偷懒
+         */
+
+        // 由于算法问题，个位数特殊处理
+        data[max_size - 1] = a % 10;
+
+        // floor是向下取整 通过log10获取a的十进制位数
+        for (int i = max_size - 2; i &gt;= max_size - 1 - floor(log10(a)); i--)
+        &#123;
+            /*
+             * 这里需要详细解释一下
+             *
+             * 对于一个数字a，我们可以写作类似下列形式
+             *
+             * 123456
+             *    ^ 如果我们想要获取这个 4
+             *
+             * 可以先 a % 100 得到后三位 456
+             * 然后再 a % 10  得到后两位 56
+             *
+             * 两者相减 得到 400
+             *
+             * 最后除以这个数字的位权，得到 4
+             */
+            data[i] = (a % binpow(10, max_size - i) - a % binpow(10, max_size - 1 - i)) / binpow(10, max_size - 1 - i);
+        &#125;
+    &#125;
+
+    /*
+     * 高精度加法
+     */
+    BigInt operator+(BigInt other)
+    &#123;
+        /*
+         * 高精度加法实际上就是常见的竖式加法，注意处理进位就好了
+         */
+
+        // 返回值
+        BigInt result;
+
+        // 进位
+        int add = 0;
+
+        // 这里可以优化 但是都是O(n) 不TLE就不用扣这么细
+        for (int i = max_size - 1; i &gt;= 0; i--)
+        &#123;
+            // 加法
+            result.data[i] = data[i] + other.data[i] + add;
+            // 进位
+            add = result.data[i] / 10;
+            // 取个位数
+            result.data[i] %= 10;
+        &#125;
+
+        return result;
+    &#125;
+
+    /*
+     * 高精度乘法 
+     */
+    BigInt operator*(BigInt other)
+    &#123;
+        /*
+         * 比较朴素的算法就是O(n^2)的模拟竖式
+         * 但是如果位数比较大，则需要快速傅里叶变幻FFDT(FFT)来实现O(nlogn)
+         */
+
+        // 返回值
+        BigInt result(0);
+
+        /*
+         * 开始模拟竖式
+         * 注意，这里实际上i相当于乘法时“底下的数”
+         */
+        for (int i = max_size - 1; i &gt;= 0; i--)
+        &#123;
+            // 进位
+            int add_number = 0;
+
+            // 循环“上面的数”
+            for (int j = max_size - 1; j &gt;= 0; j--)
+            &#123;
+                // 这里定义pushed_number表示结果在result对应的位置
+                const int pushed_number = i - (max_size - 1 - j);
+
+                // 相乘 注意一定是 “+=” 警钟长鸣！
+                result.data[pushed_number] += data[i] * other.data[j] + add_number;
+                // 取进位数
+                add_number = result.data[pushed_number] / 10;
+                // 取个位数
+                result.data[pushed_number] %= 10;
+            &#125;
+        &#125;
+
+        return result;
+    &#125;
+
+    /*
+     * 这里需要解释一下，像下面这样做会有性能损失，但在时间紧的情况下可以忽略
+     * 如果你没有那么紧迫的时间，建议你将上面对应的代码复制下来，粘贴到对应的函数上
+     * 将result的变量定义删除，然后将代码中的形如result.data[...]形式的代码改为data[...]
+     * 这里没有这么做是为了保持模板简洁
+     */
+    void operator+=(BigInt other)
+    &#123;
+        *this = *this + other;
+    &#125;
+
+    void operator*=(BigInt other)
+    &#123;
+        *this = *this * other;
+    &#125;
+&#125;;
+</code></pre>
+
+    </div>
+    
+    
+    
+    
+    <div id="comment">
+        <div id="giscus-container" class="giscus"></div>
+    </div>
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Liserver&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Liserver
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+<script
+    src="https://giscus.app/client.js"
+    data-repo="LiserverYang/LiserverYang.github.io"
+    data-repo-id="R_kgDOLIJvHA"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOLIJvHM4CcmmM"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin
+    async
+></script>
+
+
+
+
+
+    
+</body>
+</html>
